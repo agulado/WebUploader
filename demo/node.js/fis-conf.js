@@ -1,7 +1,7 @@
 // default settings. fis3 release
 // fis.set('project.charset', 'utf8');
 // fis.set('project.fileType.text', 'htm');
-fis.set('project.ignore', ['/fis-conf.js', '/web.config', '/iisnode/**', '/css/**.less', '/images/bak/**', '/**/**.cs', '/mobile/css/**.less', 'mobile/images/showcase/**', '/node_modules/**', '/server.log', '/package*.*', 'pcApplication.*', 'server.log']);
+fis.set('project.ignore', ['/fis-conf.js', '/web.config', '/iisnode/**', '/css/**.less', '/images/bak/**', '/**/**.cs', '/mobile/css/**.less', 'mobile/images/showcase/**', '/node_modules/**', '/server.log', '/package*.*', 'pcApplication.*', 'server.log', '/UploadFile/**']);
 fis.config.set('settings.optimizer.uglify-js', {
     mangle: false // 不混淆
 });
@@ -72,12 +72,12 @@ fis.media('pub').match('/app_maxAge_pub.js', {
 
 fis.media('pub').match('/inc/**', {
     url: '$0',
-    domain: 'http://www.topu.net/new'
+    domain: ''
 });
 
 fis.media('pub').match('{/css/**,/images/**,/widget/**}', {
     url: '$0',
-    domain: 'http://www.topu.net/new/static'
+    domain: '/static'
 });
 
 fis.media('pub').match('/widget/**.js', {
@@ -92,12 +92,12 @@ fis.media('pub').match('/css/**.css', {
 
 fis.media('pub').match('/mobile/inc/**', {
     url: '$0',
-    domain: 'http://www.topu.net/new/mobile'
+    domain: ''
 });
 
 fis.media('pub').match('{/mobile(/css/**),/mobile(/images/**),/mobile(/widget/**)}', {
     url: '$1',
-    domain: 'http://www.topu.net/new/mobile/static'
+    domain: ''
 });
 
 fis.media('pub').match('/mobile/widget/**.js', {

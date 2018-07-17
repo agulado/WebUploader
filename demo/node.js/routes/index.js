@@ -10,6 +10,11 @@ var router = require('express').Router(),
     multer_storage = multer.diskStorage({
         destination: function(req, file, cb) {
             try {
+                fs.statSync(dir_temp.replace("/temp", ""));
+            } catch (e) {
+                fs.mkdirSync(dir_temp.replace("/temp", ""));
+            }
+            try {
                 fs.statSync(dir_temp);
             } catch (e) {
                 fs.mkdirSync(dir_temp);

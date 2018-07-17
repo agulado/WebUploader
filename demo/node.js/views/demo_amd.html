@@ -12,14 +12,44 @@
     <link rel="stylesheet" href="/css/style.css">
     <style>
     input {
-        margin: 5vh 10vw;
+    }
+    div.wrapper{
+        margin: 5vh 5vw;
+        padding:20px;
+        text-align:left;
+        border:dashed 1px #ccc;
+    }
+    div.wrapper h4{
+        color:#333;
+        text-align:left;
+    }
+    div.wrapper input{
+        margin-top: 2vh;
+    }
+    div.wrapper p.file_2_progress{
+        margin-top:2vh;
+    }
+    div.wrapper ul.file_3_progress li{
+        margin:1.5vh 0 0 0.5vw;
     }
     </style>
 </head>
 
 <body class="index">
-    <input class="file_1" type="file" multiple>
-    <input class="file_2" type="file" multiple>
+    <div class="wrapper">
+        <h4>第一种：自动生成进度条视图 && 自动弹层显示 && 自动开始上传</h4>
+        <input class="file_1" type="file" multiple>
+    </div>
+    <div class="wrapper">
+        <h4>第二种：自动生成进度条视图 && 装载在input后</h4>
+        <input class="file_2" type="file" multiple>
+        <p class="file_2_progress"></p>
+    </div>
+    <div class="wrapper">
+        <h4>第三种：自己编写进度条视图 && 直接调用文件上传方法</h4>
+        <input class="file_3" type="file" multiple>
+        <ul class="file_3_progress"></ul>
+    </div>
 </body>
 <script src="/inc/require.js" data-main="/widget/main.js" id="script_page" page="index"></script>
 

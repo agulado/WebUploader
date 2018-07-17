@@ -23,6 +23,7 @@
         "express",
         "fis",
         "FileReader",
+        "FormData",
         "Image",
         "location",
         "JRoll",

@@ -5,9 +5,9 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
 
             index.inputListener();
 
-            this.$WebUploader1 = new $WebUploader(1);
-            this.$WebUploader2 = new $WebUploader(2);
-            this.$WebUploader3 = new $WebUploader(3);
+            index.$WebUploader1 = new $WebUploader(1);
+            index.$WebUploader2 = new $WebUploader(2);
+            index.$WebUploader3 = new $WebUploader(3);
         },
         inputListener: () => {
             index.input_1();
@@ -24,18 +24,19 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                 $debug.debug(`\n9:files=`);
                 $debug.debug($(".file_1")[0].files);
 
-                this.$WebUploader1.getProgressView({
+                index.$WebUploader1.getProgressView({
                     debug: true,
                     files: files,
                     thread_maxCount: 2,
                     upload_url: "/uploadfile",
+                    autoStart: false,
                     callback_successAll: (filePath) => {
                         $debug.warn("\n27 filePath=");
                         $debug.warn(filePath);
 
                         window.alert("success");
 
-                        this.$WebUploader1.ProgressViewClose();
+                        index.$WebUploader1.ProgressViewClose();
                     }
                 });
 
@@ -51,7 +52,7 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
 
                 const wrapper = $(".file_2_progress");
 
-                this.$WebUploader2.getProgressView({
+                const progressView = index.$WebUploader2.getProgressView({
                     debug: true,
                     show_kind: 2,
                     files: files,
@@ -60,16 +61,22 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     wrapper_height: 50,
                     wrapper_height_unit: "vh",
                     upload_url: "/uploadfile",
-                    callback_progressViewClose: () => {
-                        wrapper.html("");
-                    },
+                    thread_maxCount: 2,
+                    // callback_progressViewClose: () => {
+                    //     progressView.dom_obj.file_ul.html("");
+                    // },
                     callback_successAll: (filePath) => {
                         $debug.warn(`\n53 filePath=`);
                         $debug.warn(filePath);
-                        this.$WebUploader2.ProgressViewClose();
+                        index.$WebUploader2.ProgressViewClose();
                         window.alert("success");
                     }
-                }).appendTo(wrapper).css("display", "block");
+                });
+
+                // $debug.warn(`\n75: progressView=`);
+                // $debug.warn(progressView[0].outerHTML);
+
+                progressView.appendTo(wrapper).css("display", "block");
 
                 $(".file_2").val("");
             });
@@ -104,17 +111,17 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                         $debug.debug(`\n100 button_li clicked`);
                         $debug.debug(filesArray);
 
-                        this.$WebUploader3.UploadStart({
+                        index.$WebUploader3.UploadStart({
                             files: filesArray, // 上传文件列表，FileList或FileArray均可
                             url: "/uploadfile", // ajax页面地址
                             thread_maxCount: 1, // 最多同时执行上传线程。默认5
-                            progress_callback: (index, percent) => {
+                            callback_progress: (index, percent) => {
                                 li[index].find("span").text(`${percent}%`);
                             }, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-                            success_callback: (index, filePath) => {
+                            callback_success: (index, filePath) => {
                                 li[index].find("span").html(`&radic; ${filePath}`);
                             }, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-                            successAll_callback: () => {
+                            callback_successAll: () => {
                                 window.alert("success");
                             } // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
                         });

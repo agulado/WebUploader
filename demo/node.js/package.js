@@ -32,7 +32,7 @@ var interval_print = setInterval(function() {
     };
     shell.exec("lessc css/style.less css/style.css", function(error) {
         if (error)
-            console.log("\n", 50, error, "\n");
+            console.log("\n", 35, error, "\n");
         check_r_count();
     });
 })();
@@ -44,11 +44,27 @@ var r = function() {
 
     var check_r_count = function() {
         if (++r_index >= r_count)
-            doFis()
+            babel()
     };
     shell.exec("node widget/r.js -o widget/build.js", function(error) {
         if (error)
-            console.log("\n", 29, error, "\n");
+            console.log("\n", 51, error, "\n");
+        check_r_count();
+    });
+};
+
+// babel
+var babel = function() {
+    var r_index = 0,
+        r_count = 1;
+
+    var check_r_count = function() {
+        if (++r_index >= r_count)
+            doFis()
+    };
+    shell.exec("npx babel widget/aio.js --out-file widget/aio.js --preset=env", function(error) {
+        if (error)
+            console.log("\n", 67, error, "\n");
         check_r_count();
     });
 };
@@ -73,15 +89,13 @@ var doFis = function() {
 
         // 获取命令执行的输出
         if (error)
-            console.log(error);
+            console.log("\n", 92, error, "\n");
 
         run(fis_releaseDir);
     });
 };
 
 // 运行node
-
-// 运行
 var run = function(fis_releaseDir) {
 
     clearInterval(interval_print);

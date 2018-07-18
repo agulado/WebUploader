@@ -34,9 +34,15 @@
                 if (!this.dom_obj) {
                     // 创建dom
                     this.create_dom();
+                } else {
+                    this.dom_obj.file_ul.html("");
                 }
 
-                debug(`\n38: this.opt.files=`);
+                debug(`\n40: this.dom_obj.file_ul&this.dom_obj.file_li_title=`);
+                debug(this.dom_obj.title_ul.attr("style"));
+                debug(this.dom_obj.title_ul[0].outerHTML);
+
+                debug(`\n43: this.opt.files=`);
                 debug(this.opt.files);
 
                 let i = 0,
@@ -211,7 +217,7 @@
                         "width": `${this.dom_obj.file_span_cell3.width()*0.9}px`,
                         "height": "10px",
                         "position": "absolute",
-                        "top": "50%",
+                        // "top": "50%",
                         "left": `${this.dom_obj.file_span_cell3.width()*0.05}px`,
                         "margin-top": "-5px",
                         "border-radius": "5px",
@@ -221,7 +227,7 @@
                         "width": `${this.dom_obj.file_span_cell3.width()*0}px`,
                         "height": "10px",
                         "position": "absolute",
-                        "top": "50%",
+                        // "top": "50%",
                         "left": "5%",
                         "margin-top": "-5px",
                         "border-radius": "5px",
@@ -231,22 +237,20 @@
 
                 // cell4 - icon - delete
                 this.dom_obj.file_span_cell4_button_delete_html = `
-                    <svg class="file_span_cell4_button_delete" t="1522138218728" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3162" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
-                    <defs><style type="text/css">svg.file_span_cell4_button_delete{fill:${this.opt.wrapper_font_color};cursor:pointer;} svg:hover{fill:${this.opt.wrapper_border_color};}</style></defs>
+                    <span><svg class="file_span_cell4_button_delete" t="1522138218728" style="fill:${this.opt.wrapper_font_color}" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3162" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
                     <path d="M826.668581 311.533464c0-8.83361 7.163979-16.000395 15.997589-16.000395S858.667967 302.732124 858.667967 311.533464l0 613.801178c0 27.098529-11.134613 51.766973-29.001066 69.665696-17.86505 17.866453-42.567167 28.999663-69.665696 28.999663L264.0016 1024c-27.099932 0-51.832916-11.13321-69.667099-28.999663-17.866453-17.866453-28.999663-42.530688-28.999663-69.665696L165.334839 311.533464c0-8.83361 7.166785-16.000395 15.998992-16.000395 8.83361 0 16.000395 7.199055 16.000395 16.000395l0 613.801178c0 18.267725 7.534384 34.966839 19.600624 47.031676 12.066239 12.067642 28.766756 19.632894 47.033079 19.632894l496.002411 0c18.266322 0 34.93036-7.568058 46.999405-19.632894 12.099913-12.099913 19.631491-28.766756 19.631491-46.999405L826.601235 311.533464 826.668581 311.533464z" p-id="1939"></path>
                     <path d="M392.666997 884.000756c0 8.83361-7.166785 15.998992-16.000395 15.998992s-16.000395-7.165382-16.000395-15.998992l0-568.333904c0-8.83361 7.166785-16.000395 16.000395-16.000395s16.000395 7.166785 16.000395 16.000395L392.666997 884.000756z" p-id="1940"></path>
                     <path d="M528.001096 884.000756c0 8.83361-7.165382 15.998992-15.998992 15.998992s-16.000395-7.165382-16.000395-15.998992l0-568.333904c0-8.83361 7.166785-16.000395 16.000395-16.000395s15.998992 7.166785 15.998992 16.000395L528.001096 884.000756z" p-id="1941"></path>
                     <path d="M663.367465 884.000756c0 8.83361-7.163979 15.998992-15.997589 15.998992-8.835013 0-16.000395-7.165382-16.000395-15.998992l0-568.333904c0-8.83361 7.165382-16.000395 16.000395-16.000395 8.83361 0 15.997589 7.166785 15.997589 16.000395L663.367465 884.000756 663.367465 884.000756z" p-id="1942"></path>
                     <path d="M383.333901 98.666762c0 8.83361-7.166785 16.000395-16.000395 16.000395-8.832207 0-15.998992-7.166785-15.998992-16.000395 0-27.167278 11.099537-51.832916 28.967393-69.699369C398.168361 11.099537 422.835402 0 450.001277 0l124.000252 0c27.133605 0 51.800646 11.13321 69.664293 28.999663 17.866453 17.866453 29.001066 42.599437 29.001066 69.667099 0 8.83361-7.165382 16.000395-15.998992 16.000395s-15.998992-7.166785-15.998992-16.000395c0-18.266322-7.532981-34.966839-19.600624-47.033079-12.069045-12.067642-28.766756-19.634297-47.033079-19.634297l-123.998849 0c-18.299995 0-34.966839 7.532981-47.066752 19.600624C390.866883 63.699922 383.333901 80.366766 383.333901 98.666762z" p-id="1943"></path>
                     <path d="M139.999945 144.665792l744.00011 0c15.698739 0 30.032309 6.432989 40.433126 16.833807l0.065943 0.067346c10.400818 10.399415 16.833807 24.732985 16.833807 40.433126l0 41.333885c0 8.832207-7.166785 15.998992-16.000395 15.998992l-0.433543 0L98.667463 259.332948c-8.83361 0-16.000395-7.166785-16.000395-15.998992l0-0.39987 0-40.934015c0-15.666468 6.432989-30.033712 16.833807-40.433126l0.067346-0.067346C109.967637 151.100184 124.333477 144.665792 139.999945 144.665792L139.999945 144.665792zM884.001458 176.666581 139.999945 176.666581c-6.966149 0-13.333194 2.834163-17.866453 7.399691L122.066146 184.133619c-4.566931 4.531855-7.399691 10.866631-7.399691 17.866453l0 25.33349 794.633417 0 0-25.33349c0-6.966149-2.834163-13.333194-7.398288-17.866453l-0.06875-0.067346C897.302382 179.500744 890.967607 176.666581 884.001458 176.666581z" p-id="1944"></path>
-                    </svg>
+                    </svg></span>
                 `;
 
                 // cell4 - icon - wait
                 this.dom_obj.file_span_cell4_button_wait_html = `
                     <svg class="file_span_cell4_button_wait" t="1522138218728" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3162" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
-                    <defs><style type="text/css">svg.file_span_cell4_button_wait{fill:${this.opt.wrapper_font_color};cursor:default;}</style></defs>
-                    <path d="M896 0 128 0l0 42.666667 106.666667 0 0 234.645333C234.666667 389.333333 389.653333 474.389333 469.333333 512c-79.68 37.610667-234.666667 122.666667-234.666667 234.688L234.666667 981.333333 128 981.333333l0 42.666667 768 0 0-42.666667-106.666667 0L789.333333 746.688C789.333333 634.666667 634.346667 549.610667 554.666667 512c79.68-37.610667 234.666667-122.624 234.666667-234.666667l0-234.666667 106.666667 0L896 0zM746.666667 746.688 746.666667 981.333333 277.333333 981.333333 277.333333 746.688c0-93.589333 160.384-182.592 234.666667-213.354667C586.282667 564.117333 746.666667 653.12 746.666667 746.688zM746.666667 277.312c0 93.589333-160.426667 182.592-234.666667 213.354667-74.282667-30.784-234.666667-119.786667-234.666667-213.354667L277.333333 42.666667l469.333333 0L746.666667 277.312z" p-id="2106"></path>
+                    <path style="fill:${this.opt.wrapper_font_color};" d="M896 0 128 0l0 42.666667 106.666667 0 0 234.645333C234.666667 389.333333 389.653333 474.389333 469.333333 512c-79.68 37.610667-234.666667 122.666667-234.666667 234.688L234.666667 981.333333 128 981.333333l0 42.666667 768 0 0-42.666667-106.666667 0L789.333333 746.688C789.333333 634.666667 634.346667 549.610667 554.666667 512c79.68-37.610667 234.666667-122.624 234.666667-234.666667l0-234.666667 106.666667 0L896 0zM746.666667 746.688 746.666667 981.333333 277.333333 981.333333 277.333333 746.688c0-93.589333 160.384-182.592 234.666667-213.354667C586.282667 564.117333 746.666667 653.12 746.666667 746.688zM746.666667 277.312c0 93.589333-160.426667 182.592-234.666667 213.354667-74.282667-30.784-234.666667-119.786667-234.666667-213.354667L277.333333 42.666667l469.333333 0L746.666667 277.312z" p-id="2106"></path>
                     </svg>
                 `;
 
@@ -257,7 +261,10 @@
                         "text-align": "center"
                     })
                     .html(this.dom_obj.file_span_cell4_button_delete_html)
-                    .appendTo(this.dom_obj.file_li_template);
+                    .appendTo(this.dom_obj.file_li_template)
+                    .find("span").css({
+                        "cursor": "pointer"
+                    });
 
                 // 表头
                 this.dom_obj.file_li_title = this.dom_obj.file_li_template.clone();
@@ -351,7 +358,7 @@
                         files: this.opt.files,
                         url: this.opt.upload_url,
                         thread_maxCount: this.opt.thread_maxCount,
-                        successAll_callback: this.opt.callback_successAll
+                        callback_successAll: this.opt.callback_successAll
                     });
                 });
 
@@ -380,7 +387,15 @@
                 });
 
                 // 删除
-                this.dom_obj.file_ul.find(".cell4").unbind("click").on("click", (e) => {
+                this.dom_obj.file_ul.find(".cell4 span").hover((e) => {
+                    $(e.target).parents(".cell4").find("svg").css({
+                        "fill": this.opt.wrapper_border_color
+                    });
+                }, (e) => {
+                    $(e.target).parents(".cell4").find("svg").css({
+                        "fill": this.opt.wrapper_font_color
+                    });
+                }).unbind("click").on("click", (e) => {
                     const _this = $(e.target),
                         li = _this.parents("li");
 
@@ -419,12 +434,12 @@
                     len = this.opt_upload.files.length,
                     para = {
                         url: this.opt_upload.url,
-                        progress_callback: (event_progress, index) => {
+                        callback_progress: (event_progress, index) => {
                             if (event_progress.lengthComputable) {
                                 const percent = Math.floor(event_progress.loaded * 100 / event_progress.total);
 
-                                if (this.opt_upload.progress_callback)
-                                    this.opt_upload.progress_callback(index, percent);
+                                if (this.opt_upload.callback_progress)
+                                    this.opt_upload.callback_progress(index, percent);
                                 else {
                                     const li = this.dom_obj.file_ul.find(`li:eq(${index})`),
                                         progress_gray = li.find(".cell3 p:first"),
@@ -436,20 +451,20 @@
                                 }
                             }
                         },
-                        success_callback: (index, filePath) => {
+                        callback_success: (index, filePath) => {
 
-                            debug(`\n112: UploadStart success_callback. index=${index},filePath=${filePath}`);
+                            debug(`\n112: UploadStart callback_success. index=${index},filePath=${filePath}`);
 
-                            if (this.opt_upload.success_callback)
-                                this.opt_upload.success_callback(index, filePath);
+                            if (this.opt_upload.callback_success)
+                                this.opt_upload.callback_success(index, filePath);
 
                             setTimeout(() => {
 
                                 this.UploadSuccessCounter(this.opt_upload.files.length, (filePath) => {
 
-                                    debug(`\n119: UploadStart successAll_callback. filePath=`);
+                                    debug(`\n119: UploadStart callback_successAll. filePath=`);
                                     debug(filePath);
-                                    this.opt_upload.successAll_callback && this.opt_upload.successAll_callback(filePath);
+                                    this.opt_upload.callback_successAll && this.opt_upload.callback_successAll(filePath);
                                 }, () => {
                                     var i = ++this.Uploading_index;
                                     if (i < this.opt_upload.files.length) {
@@ -468,10 +483,10 @@
                 }
             },
 
-            // 上传文件成功计数。count=上传文件总个数; _successAll_callback=全部文件上传成功回调; _next_callback=未全部上传成功回调(调用下一个UploadDo)
-            UploadSuccessCounter: function(count, _successAll_callback, _next_callback) {
+            // 上传文件成功计数。count=上传文件总个数; _success_callback=全部文件上传成功回调; _next_callback=未全部上传成功回调(调用下一个UploadDo)
+            UploadSuccessCounter: function(count, _success_callback, _next_callback) {
                 if (++this.UploadSuccessCount >= count)
-                    _successAll_callback && _successAll_callback(this.UploadSuccessFilepath);
+                    _success_callback && _success_callback(this.UploadSuccessFilepath);
                 else
                     _next_callback && _next_callback();
             },
@@ -483,15 +498,15 @@
                     url: "",
                     file: "",
                     index: -1,
-                    progress_callback: null,
-                    success_callback: null
+                    callback_progress: null,
+                    callback_success: null
                 }, opt);
 
                 this.Uploading_index = opt.index;
 
                 // if (opt.index < 0 || opt.files.length < 1 || opt.index >= opt.files.length)
                 if (opt.file === "")
-                    opt.success_callback && opt.success_callback();
+                    opt.callback_success && opt.callback_success();
 
                 debug(`\n422: Upload_do.opt=`);
                 debug(opt);
@@ -519,7 +534,7 @@
                     xhr: () => {
                         let Xhr = $.ajaxSettings.xhr();
                         Xhr.upload.addEventListener("progress", (e) => {
-                            opt.progress_callback && opt.progress_callback(e, opt.index);
+                            opt.callback_progress && opt.callback_progress(e, opt.index);
                         });
                         return Xhr;
                     },
@@ -530,9 +545,9 @@
 
                         this.UploadSuccessFilepath[opt.index] = res.filePath;
 
-                        // 为了让success_callback在progress_callback后执行。
+                        // 为了让callback_success在callback_progress后执行。
                         setTimeout(() => {
-                            opt.success_callback && opt.success_callback(opt.index, res.filePath);
+                            opt.callback_success && opt.callback_success(opt.index, res.filePath);
                         }, 50);
                     }
                 });
@@ -553,7 +568,7 @@
             wrapper_border_radius_px: "5px", // 外盒圆角radius，默认 "5px"
             wrapper_bg_color: "rgb(255,255,255)", // 背景颜色，默认 "rgb(255,255,255)"
             wrapper_font_size: "12px", // 字体大小，默认"12px"
-            wrapper_font_color: "#666", // 字体颜色，默认"#666"
+            wrapper_font_color: "#666666", // 字体颜色，默认"#666666"
             button_height: 40, // 底部按钮高度，默认40
             button_height_unit: "px", // 底部按钮高度单位，默认"px"
             files: [], // 待上传图片列表，Filelist。
@@ -582,9 +597,9 @@
             files: [], // 上传文件列表，Filelist或array都可以
             url: null, // ajax页面地址
             thread_maxCount: 5, // 最多同时执行上传线程。默认5
-            progress_callback: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-            success_callback: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-            successAll_callback: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
+            callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
+            callback_successAll: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
         };
 
         opt.files = FileListToFileArray(opt.files);
@@ -652,7 +667,7 @@
         }
 
         return files;
-    }
+    };
 
     if (typeof define === "function" && define.amd) {
         define(() => WebUploader);

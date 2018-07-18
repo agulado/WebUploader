@@ -1,4 +1,4 @@
-WebUploader v0.1.3
+WebUploader v0.1.4
 ===
 
 ### 基于H5的文件上传layout
@@ -64,22 +64,28 @@ webUploader.UploadStart({
 	files: [], // 上传文件列表，Filelist或array都可以
 	url: null, // ajax页面地址
 	thread_maxCount: 5, // 最多同时执行上传线程。默认5
-	progress_callback: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-	success_callback: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-	successAll_callback: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+	callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
+	callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
+	callback_successAll: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
 });     
 ```
 更新日志
 ---
+v0.1.4（2018-07-18）
+
+	* 引入了babel，做了ie7以上的兼容测试
+	* 解决了一些bug
 v0.1.3（2018-07-17）
 
 	* 修正了fis-conf，解决了npm build
 v0.1.2（2018-07-17）
-
-	* 获得上传列表dom 或 自己编写dom直接调用上传方法 
-	* 获得上传列表dom后可以用默认的弹层方式显示，也可以获得dom后自己装载在页面 
-	* 用默认的弹层方式显示上传列表时，可选择是否自动开始上传 
-	* 可以设置上传最多线程数
+	
+	* node.js版demo好了。
+	* 已实现功能如下：
+	** 获得上传列表dom 或 自己编写dom直接调用上传方法 
+	** 获得上传列表dom后可以用默认的弹层方式显示，也可以获得dom后自己装载在页面 
+	** 用默认的弹层方式显示上传列表时，可选择是否自动开始上传 
+	** 可以设置上传最多线程数
 v 0.1.1 (2018-07-10)
 
 	*  进度条视图好了

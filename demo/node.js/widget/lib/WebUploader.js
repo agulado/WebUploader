@@ -50,7 +50,7 @@
                     f;
                 let li, span;
                 for (; i < len; i++) {
-                    li = this.dom_obj.file_li_template.clone();
+                    li = this.dom_obj.file_li_template.clone().attr("ProgressView_liIndex", i);
                     span = li.find("span");
                     f = this.opt.files[i];
                     debug(`
@@ -337,29 +337,36 @@
 
                 // 开始上传
                 this.dom_obj.button_start.unbind("click").on("click", (e) => {
-                    const _this = $(e.target);
 
-                    debug(`\n331 start click`);
+                    setTimeout(() => {
 
-                    if (_this.hasClass("disable"))
-                        return;
+                        const _this = $(e.target);
 
-                    _this.addClass("disable").css({
-                        "color": this.opt.wrapper_font_color,
-                        "text-decoration": "none",
-                        "cursor": "default"
-                    }).text("上传中，请稍候");
+                        debug(`\n331 start click`);
 
-                    const cell4_button = this.dom_obj.file_ul.find(".cell4");
-                    cell4_button.html(this.dom_obj.file_span_cell4_button_wait_html);
-                    $(cell4_button[0]).html("0%");
+                        if (_this.hasClass("disable"))
+                            return;
 
-                    this.UploadStart({
-                        files: this.opt.files,
-                        url: this.opt.upload_url,
-                        thread_maxCount: this.opt.thread_maxCount,
-                        callback_successAll: this.opt.callback_successAll
-                    });
+                        _this.addClass("disable").css({
+                            "color": this.opt.wrapper_font_color,
+                            "text-decoration": "none",
+                            "cursor": "default"
+                        }).text("上传中，请稍候");
+
+                        const cell4_button = this.dom_obj.file_ul.find(".cell4");
+                        cell4_button.html(this.dom_obj.file_span_cell4_button_wait_html);
+                        $(cell4_button[0]).html("0%");
+
+                        debug(`\n357 button_start.click. files=`);
+                        debug(this.opt.files);
+
+                        this.UploadStart({
+                            files: this.opt.files,
+                            url: this.opt.upload_url,
+                            thread_maxCount: this.opt.thread_maxCount,
+                            callback_successAll: this.opt.callback_successAll
+                        });
+                    }, 0);
                 });
 
                 // hover效果
@@ -427,14 +434,17 @@
             UploadStart: function(opt) {
                 this.opt_upload = UploadStart_opt_assign(opt);
 
-                debug(`\n409 this.opt_upload=`);
+                debug(`\n437 this.opt_upload=`);
                 debug(this.opt_upload);
 
                 let i = 0,
                     len = this.opt_upload.files.length,
                     para = {
+                        hasError: [],
                         url: this.opt_upload.url,
                         callback_progress: (event_progress, index) => {
+                            // debug(`\n438: UploadStart.callback_progress.event_progress=`);
+                            // debug(event_progress);
                             if (event_progress.lengthComputable) {
                                 const percent = Math.floor(event_progress.loaded * 100 / event_progress.total);
 
@@ -451,6 +461,66 @@
                                 }
                             }
                         },
+                        UploadSuccessCounter_success: (filePath) => {
+
+                            debug(`\n459: UploadStart callback_successAll. filePath=`);
+                            debug(filePath);
+                            debug(`\n461: UploadStart callback_successAll. para.hasError=`);
+                            debug(para.hasError);
+
+
+                            this.UploadSuccessFilepath = {};
+                            this.UploadSuccessCount = 0;
+
+                            if (para.hasError.length > 0) {
+                                if (this.dom_obj) {
+
+                                    this.opt.callback_successAll_hasError &&
+                                        this.opt.callback_successAll_hasError(filePath);
+
+                                    const reStart = () => {
+                                        const li = this.dom_obj.file_ul.find("li");
+
+                                        for (var i = 0, len = li.length; i < len; i++) {
+                                            if (para.hasError.indexOf(i) == -1) {
+                                                $(li[i]).remove();
+                                                this.opt.files[i] = "";
+                                            }
+                                        }
+                                        for (var arr = [], i = 0, len = this.opt.files.length; i < len; i++) {
+                                            if (this.opt.files[i] === "")
+                                                continue;
+                                            arr.push(this.opt.files[i]);
+                                        }
+                                        this.opt.files = arr;
+
+                                        para.hasError = [];
+
+                                        debug(`\n483: 重试后的files=`);
+                                        debug(this.opt.files);
+                                    };
+
+                                    this.dom_obj && this.dom_obj.button_start.text("重试").css({
+                                        "cursor": "pointer"
+                                    }).removeClass("disable").one("click", reStart);
+                                } else {
+                                    this.opt_upload.callback_successAll_hasError &&
+                                        this.opt_upload.callback_successAll_hasError(para.hasError, filePath);
+                                }
+                            } else {
+                                this.opt_upload.callback_successAll && this.opt_upload.callback_successAll(filePath);
+                            }
+
+                        },
+                        UploadSuccessCounter_next: () => {
+                            var i = ++this.Uploading_index;
+                            if (i < this.opt_upload.files.length) {
+                                para.file = this.opt_upload.files[i];
+                                para.index = i;
+                                para.index_flag = this.opt_upload.filesIndexFlag[i];
+                                this.Upload_do(para);
+                            }
+                        },
                         callback_success: (index, filePath) => {
 
                             debug(`\n112: UploadStart callback_success. index=${index},filePath=${filePath}`);
@@ -459,26 +529,36 @@
                                 this.opt_upload.callback_success(index, filePath);
 
                             setTimeout(() => {
-
-                                this.UploadSuccessCounter(this.opt_upload.files.length, (filePath) => {
-
-                                    debug(`\n119: UploadStart callback_successAll. filePath=`);
-                                    debug(filePath);
-                                    this.opt_upload.callback_successAll && this.opt_upload.callback_successAll(filePath);
-                                }, () => {
-                                    var i = ++this.Uploading_index;
-                                    if (i < this.opt_upload.files.length) {
-                                        para.file = this.opt_upload.files[i];
-                                        para.index = i;
-                                        this.Upload_do(para);
-                                    }
-                                });
+                                this.UploadSuccessCounter(this.opt_upload.files.length, para.UploadSuccessCounter_success, para.UploadSuccessCounter_next);
                             }, 0);
+                        },
+                        callback_error: (index) => {
+
+                            para.hasError.push(index);
+
+                            if (this.opt_upload.callback_error)
+                                this.opt_upload.callback_error(index);
+                            if (this.dom_obj) {
+                                const li = this.dom_obj.file_ul.find(`li:eq(${index})`),
+                                    percent_span = li.find(".cell4");
+
+                                debug(`\n487: callback_error. percent_span.length=${percent_span.length}`);
+
+                                // setTimeout使得文字的修改在callback_progress后执行
+                                setTimeout(() => {
+                                    percent_span.text(`失败`);
+                                }, 0);
+                            }
+                            setTimeout(() => {
+                                this.UploadSuccessCounter(this.opt_upload.files.length, para.UploadSuccessCounter_success, para.UploadSuccessCounter_next);
+                            }, 1);
                         }
                     };
                 for (; i < len && i < this.opt_upload.thread_maxCount; i++) {
                     para.file = this.opt_upload.files[i];
                     para.index = i;
+                    para.index_flag = this.opt_upload.filesIndexFlag[i];
+                    debug(`\n560: Upload_do.para.index_flag=${para.index_flag}`);
                     this.Upload_do(para);
                 }
             },
@@ -498,6 +578,7 @@
                     url: "",
                     file: "",
                     index: -1,
+                    index_flag: -1,
                     callback_progress: null,
                     callback_success: null
                 }, opt);
@@ -520,8 +601,6 @@
                 debug(formdata);
                 debug(`file=`);
                 debug(opt.file);
-                debug(`$ajax=`);
-                debug($.ajax);
 
                 $.ajax({
                     url: opt.url,
@@ -540,15 +619,25 @@
                     },
                     success: (res) => {
 
-                        debug(`\n459: upload success. res=`);
-                        debug(res);
+                        debug(`\n614: upload success. this.dom_obj=`);
+                        debug(this.dom_obj);
 
-                        this.UploadSuccessFilepath[opt.index] = res.filePath;
+                        const index = this.dom_obj ? this.dom_obj.file_ul.find(`li:eq(${opt.index})`).attr("ProgressView_liIndex") : opt.index_flag;
+                        this.UploadSuccessFilepath[index] = res.filePath;
+
+                        debug(`\n626: index=${index}; opt.index_flag=${opt.index_flag}; this.UploadSuccessFilepath=`);
+                        debug(this.UploadSuccessFilepath);
 
                         // 为了让callback_success在callback_progress后执行。
                         setTimeout(() => {
                             opt.callback_success && opt.callback_success(opt.index, res.filePath);
                         }, 50);
+                    },
+                    error: (err) => {
+                        debug(`\n554:upload error. err=`);
+                        debug(err);
+
+                        opt.callback_error && opt.callback_error(opt.index);
                     }
                 });
             }
@@ -578,7 +667,8 @@
             bg_color: "rgba(0,0,0,0.8)", // show_kind=1时有效，背景颜色。默认"rgba(0,0,0,0.8)"
             autoStart: true, // show_kind=1时有效，选好文件自动开始上传。默认true
             callback_progressViewClose: null, // 关闭进度条后执行回调
-            callback_successAll: null // 全部文件上传成功后回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_successAll: null, // 全部文件上传成功后回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_successAll_hasError: null // 全部文件上传完成 但 其中有上传错误 时回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
         };
         opt.files = FileListToFileArray(opt.files);
 
@@ -595,11 +685,14 @@
 
         const opt_default = {
             files: [], // 上传文件列表，Filelist或array都可以
+            filesIndexFlag: [], // 上传文件对应的index标识，在返回的对象中作为key
             url: null, // ajax页面地址
             thread_maxCount: 5, // 最多同时执行上传线程。默认5
             callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
             callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-            callback_successAll: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_error: null, // 上传失败回调（每个文件上传失败都会回调一次）。function(index=文件序号)
+            callback_successAll: null, // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_successAll_hasError: null // 全部文件上传完成 但 其中有上传错误 时回调。function(index[]=失败的文件序号数组,filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
         };
 
         opt.files = FileListToFileArray(opt.files);

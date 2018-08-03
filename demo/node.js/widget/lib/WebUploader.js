@@ -1,5 +1,5 @@
 /*
-    web-upload 0.1.1
+    web-upload 0.1.6
     高京
     2018-07-06
 */
@@ -71,7 +71,7 @@
                 // 显示弹层
                 if (this.opt.show_kind == 1) {
 
-                    debug(`\n62`);
+                    debug(`\n74072`);
                     this.dom_obj.wrapper_bg.css("display", "block");
                     this.dom_obj.wrapper.css("display", "block");
 
@@ -84,7 +84,10 @@
             },
             // 关闭进度条视图
             ProgressViewClose: function() {
-                debug("\n79 ProgressViewClose()");
+                debug("\87 ProgressViewClose()");
+
+                this.Upload_abort();
+
                 if (this.dom_obj) {
                     this.dom_obj.wrapper_bg &&
                         this.dom_obj.wrapper_bg.css("display", "none");
@@ -442,6 +445,7 @@
                     para = {
                         hasError: [],
                         url: this.opt_upload.url,
+                        updateID: this.updateID,
                         callback_progress: (event_progress, index) => {
                             // debug(`\n438: UploadStart.callback_progress.event_progress=`);
                             // debug(event_progress);
@@ -523,7 +527,9 @@
                         },
                         callback_success: (index, filePath) => {
 
-                            debug(`\n112: UploadStart callback_success. index=${index},filePath=${filePath}`);
+                            if (this.opt_upload.updateID)
+
+                                debug(`\n112: UploadStart callback_success. index=${index},filePath=${filePath}`);
 
                             if (this.opt_upload.callback_success)
                                 this.opt_upload.callback_success(index, filePath);
@@ -596,13 +602,14 @@
                 formdata.append(`file`, opt.file);
                 formdata.append(`index`, 1);
                 formdata.append(`count`, 0);
+                // formdata.append(`updateID`, );
 
                 debug(`\n432: Upload_do.formdata=`);
                 debug(formdata);
                 debug(`file=`);
                 debug(opt.file);
 
-                $.ajax({
+                this.Xhr = $.ajax({
                     url: opt.url,
                     type: "post",
                     data: formdata,
@@ -612,6 +619,7 @@
                     dataType: "json",
                     xhr: () => {
                         let Xhr = $.ajaxSettings.xhr();
+                        // this.Xhr=Xhr;
                         Xhr.upload.addEventListener("progress", (e) => {
                             opt.callback_progress && opt.callback_progress(e, opt.index);
                         });
@@ -637,9 +645,15 @@
                         debug(`\n554:upload error. err=`);
                         debug(err);
 
-                        opt.callback_error && opt.callback_error(opt.index);
+                        if (err.statusText != 'abort')
+                            opt.callback_error && opt.callback_error(opt.index);
                     }
                 });
+            },
+
+            // 取消上传
+            Upload_abort: function() {
+                this.Xhr && this.Xhr.abort();
             }
         };
     }
@@ -687,11 +701,12 @@
             files: [], // 上传文件列表，Filelist或array都可以
             filesIndexFlag: [], // 上传文件对应的index标识，在返回的对象中作为key
             url: null, // ajax页面地址
+            update_id: null, // 上传标识，服务端会在成功后原样返回，以避免取消后依旧提示success的问题
             thread_maxCount: 5, // 最多同时执行上传线程。默认5
             callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
             callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
             callback_error: null, // 上传失败回调（每个文件上传失败都会回调一次）。function(index=文件序号)
-            callback_successAll: null, // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+            callback_successAll: null, // 全部文件上传成功回调。function(update_id=服务器端返回的标识, filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
             callback_successAll_hasError: null // 全部文件上传完成 但 其中有上传错误 时回调。function(index[]=失败的文件序号数组,filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
         };
 

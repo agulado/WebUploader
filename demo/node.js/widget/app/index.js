@@ -117,6 +117,16 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     li[i].html(`${f.name}: <span>0%</span>`).appendTo(wrapper);
                 }
 
+                // 取消按钮
+                $(document.createElement("li")).css({
+                    "cursor": "pointer",
+                    "font-weight": "bold",
+                    "color": "#999"
+                }).text("取消").appendTo(wrapper).unbind("click").on("click", () => {
+                    index.$WebUploader3.Upload_abort();
+                });
+
+                // 上传按钮
                 let filePath = {};
                 $(document.createElement("li"))
                     .addClass("button_li")

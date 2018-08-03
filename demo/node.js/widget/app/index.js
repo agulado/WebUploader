@@ -24,19 +24,23 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                 $debug.debug(`\n9:files=`);
                 $debug.debug($(".file_1")[0].files);
 
+                let filePath = {};
+
                 index.$WebUploader1.getProgressView({
                     debug: true,
                     files: files,
                     thread_maxCount: 2,
                     upload_url: "/uploadfile",
                     autoStart: false,
-                    callback_successAll: (filePath) => {
-                        $debug.warn("\n27 filePath=");
-                        $debug.warn(filePath);
-
-                        window.alert("success");
-
+                    callback_successAll: (_filePath) => {
                         index.$WebUploader1.ProgressViewClose();
+                        window.alert("success");
+                        filePath = $.extend(filePath, _filePath);
+                        $debug.warn(`\n37 callback_successAll: filePath=`);
+                        $debug.warn(filePath);
+                    },
+                    callback_successAll_hasError: (_filePath) => {
+                        filePath = $.extend(filePath, _filePath);
                     }
                 });
 
@@ -52,6 +56,7 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
 
                 const wrapper = $(".file_2_progress");
 
+                let filePath = {};
                 const progressView = index.$WebUploader2.getProgressView({
                     debug: true,
                     show_kind: 2,
@@ -65,11 +70,19 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     // callback_progressViewClose: () => {
                     //     progressView.dom_obj.file_ul.html("");
                     // },
-                    callback_successAll: (filePath) => {
-                        $debug.warn(`\n53 filePath=`);
-                        $debug.warn(filePath);
+                    callback_successAll: (_filePath) => {
+                        $debug.warn(`\n70 callback_successAll: _filePath=`);
+                        $debug.warn(_filePath);
                         index.$WebUploader2.ProgressViewClose();
                         window.alert("success");
+                        filePath = $.extend(filePath, _filePath);
+                        $debug.warn(`\n75 callback_successAll: filePath=`);
+                        $debug.warn(filePath);
+                    },
+                    callback_successAll_hasError: (_filePath) => {
+                        $debug.warn(`\n79 callback_successAll_hasError: _filePath=`);
+                        $debug.warn(_filePath);
+                        filePath = $.extend(filePath, _filePath);
                     }
                 });
 
@@ -93,16 +106,30 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     len = files.length,
                     f,
                     filesArray = [],
+                    filesIndexFlagArray = [],
                     li = [],
                     li_temp = $(document.createElement("li"));
                 for (; i < len; i++) {
                     f = files.item(i);
                     filesArray.push(f);
+                    filesIndexFlagArray.push(i);
                     li.push(li_temp.clone());
                     li[i].html(`${f.name}: <span>0%</span>`).appendTo(wrapper);
                 }
 
-                const button_li = $(document.createElement("li"))
+                // 取消按钮
+                $(document.createElement("li")).css({
+                    "cursor": "pointer",
+                    "font-weight": "bold",
+                    "color": "#999"
+                }).text("取消").appendTo(wrapper).unbind("click").on("click", () => {
+                    index.$WebUploader3.Upload_abort();
+                });
+
+                // 上传按钮
+                let filePath = {};
+                $(document.createElement("li"))
+                    .addClass("button_li")
                     .css({
                         "cursor": "pointer",
                         "font-weight": "bold"
@@ -110,21 +137,72 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
 
                         $debug.debug(`\n100 button_li clicked`);
                         $debug.debug(filesArray);
+                        $debug.debug(filesIndexFlagArray);
 
-                        index.$WebUploader3.UploadStart({
-                            files: filesArray, // 上传文件列表，FileList或FileArray均可
-                            url: "/uploadfile", // ajax页面地址
-                            thread_maxCount: 1, // 最多同时执行上传线程。默认5
-                            callback_progress: (index, percent) => {
-                                li[index].find("span").text(`${percent}%`);
-                            }, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-                            callback_success: (index, filePath) => {
-                                li[index].find("span").html(`&radic; ${filePath}`);
-                            }, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-                            callback_successAll: () => {
-                                window.alert("success");
-                            } // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
-                        });
+                        // 让上传在restart的click后执行。
+                        setTimeout(() => {
+                            index.$WebUploader3.UploadStart({
+                                files: filesArray, // 上传文件列表，FileList或FileArray均可
+                                filesIndexFlag: filesIndexFlagArray, // 上传文件对应的index标识
+                                url: "/uploadfile", // ajax页面地址
+                                thread_maxCount: 2, // 最多同时执行上传线程。默认5
+                                callback_progress: (index, percent) => {
+                                    li[index].find("span").text(`${percent}%`);
+                                }, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
+                                callback_success: (index, filePath) => {
+                                    li[index].find("span").html(`&radic; ${filePath}`);
+                                }, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
+                                callback_successAll: (_filePath) => {
+                                    window.alert("success");
+                                    filePath = $.extend(filePath, _filePath);
+                                    $debug.warn(`\n37 callback_successAll: filePath=`);
+                                    $debug.warn(filePath);
+                                },
+                                callback_successAll_hasError: (hasError, _filePath) => {
+
+                                    $debug.warn(hasError);
+                                    $debug.warn(_filePath);
+
+                                    filePath = $.extend(filePath, _filePath);
+
+                                    let error_li = [],
+                                        success_li = [],
+                                        error_filesArray = [],
+                                        error_filesIndexFlagArray = [];
+
+                                    for (var i = 0, len = li.length; i < len; i++) {
+                                        if (hasError.indexOf(i) == -1) {
+                                            $debug.warn(i);
+                                            success_li.push(li[i]);
+                                        } else {
+                                            error_li.push(li[i]);
+                                            error_filesArray.push(filesArray[i]);
+                                            error_filesIndexFlagArray.push(filesIndexFlagArray[i]);
+                                        }
+                                    }
+
+                                    li = error_li;
+                                    error_li = [];
+
+                                    filesArray = error_filesArray;
+                                    error_filesArray = [];
+
+                                    filesIndexFlagArray = error_filesIndexFlagArray;
+                                    error_filesIndexFlagArray = [];
+
+                                    $debug.warn(`\n184 hasError: filesArray & filesIndexFlagArray=`);
+                                    $debug.warn(filesArray);
+                                    $debug.warn(filesIndexFlagArray);
+
+                                    $(".button_li").text("重新上传").one("click", function() {
+                                        success_li.forEach(function(li) {
+                                            li.remove();
+                                        });
+                                        success_li = [];
+                                    });
+                                }
+                            });
+                        }, 0);
                     });
 
                 $(".file_3").val("");

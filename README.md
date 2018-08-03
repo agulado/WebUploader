@@ -1,4 +1,4 @@
-WebUploader v0.1.4
+WebUploader v0.1.6
 ===
 
 ### 基于H5的文件上传layout
@@ -58,10 +58,11 @@ webUploader.getProgressView({
 ```javascript
 webUploader.ProgressViewClose();
 ```
-#### 执行上传文件（跳过获得进度条视图步骤）：
+#### 执行上传文件（跳过获得进度条视图步骤；如已获得进度条视图，是不需要执行此方法的）：
 ```javascript
 webUploader.UploadStart({
 	files: [], // 上传文件列表，Filelist或array都可以
+	fileIndexFlag: [], // 上传文件对应的index标识，在返回的对象中作为key
 	url: null, // ajax页面地址
 	thread_maxCount: 5, // 最多同时执行上传线程。默认5
 	callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
@@ -71,13 +72,23 @@ webUploader.UploadStart({
 ```
 更新日志
 ---
+v0.1.6（2018-08-03）
+
+	* 做了上传取消的处理。
+
+v0.1.5（2018-08-01）
+
+	* 做了上传失败的处理。用自带进度条样式会自动处理，自行处理方案请看demo
+
 v0.1.4（2018-07-18）
 
 	* 引入了babel，做了ie7以上的兼容测试
 	* 解决了一些bug
+
 v0.1.3（2018-07-17）
 
 	* 修正了fis-conf，解决了npm build
+
 v0.1.2（2018-07-17）
 	
 	* node.js版demo好了。
@@ -86,6 +97,7 @@ v0.1.2（2018-07-17）
 	** 获得上传列表dom后可以用默认的弹层方式显示，也可以获得dom后自己装载在页面 
 	** 用默认的弹层方式显示上传列表时，可选择是否自动开始上传 
 	** 可以设置上传最多线程数
+
 v 0.1.1 (2018-07-10)
 
 	*  进度条视图好了

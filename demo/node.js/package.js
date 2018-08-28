@@ -60,7 +60,7 @@ var babel = function() {
 
     var check_r_count = function() {
         if (++r_index >= r_count)
-            doFis()
+            doFis();
     };
     shell.exec("npx babel widget/aio.js --out-file widget/aio.js --preset=env", function(error) {
         if (error)

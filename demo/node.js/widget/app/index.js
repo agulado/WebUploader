@@ -31,7 +31,8 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     files: files,
                     thread_maxCount: 2,
                     upload_url: "/uploadfile",
-                    autoStart: false,
+                    check_url: "/checkfile",
+                    autoStart: true,
                     callback_successAll: (_filePath) => {
                         index.$WebUploader1.ProgressViewClose();
                         window.alert("success");
@@ -66,6 +67,7 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     wrapper_height: 50,
                     wrapper_height_unit: "vh",
                     upload_url: "/uploadfile",
+                    check_url: "/checkfile",
                     thread_maxCount: 2,
                     // callback_progressViewClose: () => {
                     //     progressView.dom_obj.file_ul.html("");
@@ -144,7 +146,8 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                             index.$WebUploader3.UploadStart({
                                 files: filesArray, // 上传文件列表，FileList或FileArray均可
                                 filesIndexFlag: filesIndexFlagArray, // 上传文件对应的index标识
-                                url: "/uploadfile", // ajax页面地址
+                                upload_url: "/uploadfile",
+                                check_url: "/checkfile",
                                 thread_maxCount: 2, // 最多同时执行上传线程。默认5
                                 callback_progress: (index, percent) => {
                                     li[index].find("span").text(`${percent}%`);

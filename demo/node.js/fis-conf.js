@@ -1,7 +1,7 @@
 // default settings. fis3 release
 // fis.set('project.charset', 'utf8');
 // fis.set('project.fileType.text', 'htm');
-fis.set('project.ignore', ['/fis-conf.js', '/web.config', '/iisnode/**', '/css/**.less', '/images/bak/**', '/**/**.cs', '/mobile/css/**.less', 'mobile/images/showcase/**', '/node_modules/**', '/server.log', '/package*.*', 'pcApplication.*', 'server.log', '/UploadFile/**']);
+fis.set('project.ignore', ['/fis-conf.js', '/web.config', '/iisnode/**', '/css/**.less', '/images/bak/**', '/**/**.cs', '/mobile/css/**.less', 'mobile/images/showcase/**', '/node_modules/**', '/server.log', '/package.js','/package-lock.json', 'pcApplication.*', 'server.log', '/UploadFile/**']);
 fis.config.set('settings.optimizer.uglify-js', {
     mangle: false // 不混淆
 });

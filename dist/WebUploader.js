@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-    web-upload 1.1.1
+    web-upload 1.1.2
     高京
     2018-07-06
 */
@@ -14,6 +14,7 @@
         "li_height": 40,
         "li_height_unit": "px",
         "file_split_size": 1024 * 1024 * 2 // 2M
+        // "file_split_size": 1024 // 1KB
     };
 
     function WebUploader() {
@@ -539,22 +540,7 @@
                 debug(opt);
 
                 var Upload_split = function Upload_split(split_index) {
-                    var split_count = Math.ceil(opt.file.size / opt_global.file_split_size),
-                        split_start = opt_global.file_split_size * (split_index - 1),
-                        split_end = Math.min(opt.file.size, opt_global.file_split_size * split_index),
-                        split_file = split_count === 1 ? opt.file : opt.file.slice(split_start, split_end);
-
-                    debug("\n607: Upload_split. split_count=" + split_count + ", split_start=" + split_start + ", split_end=" + split_end);
-
-                    var formdata = new FormData();
-                    formdata.append("file", split_file);
-                    formdata.append("count", split_count);
-                    formdata.append("totalSize", opt.file.size);
-                    formdata.append("filename", opt.file.name);
-                    // formdata.append(`updateID`, );
-
-                    debug("\n615: Upload_do.formdata=");
-                    debug(formdata);
+                    var split_count = Math.ceil(opt.file.size / opt_global.file_split_size);
 
                     // 检查已传部分
                     var ajax_check = function ajax_check() {
@@ -566,10 +552,16 @@
                                 totalSize: opt.file.size
                             },
                             success: function success(res) {
-                                res = JSON.parse(res);
-                                if (isNaN(res.count)) res.count = 1;
-                                split_index = res.count;
-                                formdata.append("index", split_index);
+                                debug("\n637 res=");
+                                debug(res);
+                                // res = JSON.parse(res);
+                                if (isNaN(res.count)) res.count = 0;
+
+                                // 改变进度条
+                                opt.callback_progress({ lengthComputable: true }, opt_global.file_split_size * ~~res.count, opt.file.size, opt.index);
+
+                                split_index = ~~res.count + 1;
+                                debug("\n641 split_index=" + split_index);
                                 ajax_upload();
                             },
                             error: function error(err) {
@@ -586,6 +578,24 @@
                     var ajax_upload = function ajax_upload() {
                         debug("\n655 opt=");
                         debug(opt);
+
+                        var split_start = opt_global.file_split_size * (split_index - 1),
+                            split_end = Math.min(opt.file.size, opt_global.file_split_size * split_index),
+                            split_file = split_count === 1 ? opt.file : opt.file.slice(split_start, split_end);
+
+                        var formdata = new FormData();
+                        formdata.append("file", split_file);
+                        formdata.append("index", split_index);
+                        formdata.append("count", split_count);
+                        formdata.append("totalSize", opt.file.size);
+                        formdata.append("filename", opt.file.name);
+
+                        // debug(`\n607: Upload_split. split_count=${split_count}, split_start=${split_start}, split_end=${split_end}`);
+                        // formdata.append(`updateID`, );
+
+                        debug("\n658: ajax_upload.formdata=");
+                        debug(formdata);
+
                         _this4.Xhr = $.ajax({
                             url: opt.upload_url,
                             type: "post",
@@ -608,7 +618,7 @@
                                 debug(_this4.dom_obj);
 
                                 if (split_index < split_count) {
-                                    Upload_split(split_index + 1);
+                                    Upload_split(~~split_index + 1);
                                 } else {
 
                                     var index = _this4.dom_obj ? _this4.dom_obj.file_ul.find("li:eq(" + opt.index + ")").attr("ProgressView_liIndex") : opt.index_flag;
@@ -634,7 +644,6 @@
 
                     // 如果分片了，并且是第一次调用(split_index===1) 则先检查已上传部分；没分片则直接上传。
                     if (split_count > 1 && split_index === 1) ajax_check();else {
-                        formdata.append("index", split_index);
                         ajax_upload();
                     }
                 };

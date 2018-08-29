@@ -12,6 +12,7 @@
         "li_height": 40,
         "li_height_unit": "px",
         "file_split_size": 1024 * 1024 * 2 // 2M
+        // "file_split_size": 1024 // 1KB
     };
 
     function WebUploader() {
@@ -607,22 +608,7 @@
                 debug(opt);
 
                 const Upload_split = (split_index) => {
-                    const split_count = Math.ceil(opt.file.size / opt_global.file_split_size),
-                        split_start = opt_global.file_split_size * (split_index - 1),
-                        split_end = Math.min(opt.file.size, opt_global.file_split_size * split_index),
-                        split_file = split_count === 1 ? opt.file : opt.file.slice(split_start, split_end);
-
-                    debug(`\n607: Upload_split. split_count=${split_count}, split_start=${split_start}, split_end=${split_end}`);
-
-                    let formdata = new FormData();
-                    formdata.append(`file`, split_file);
-                    formdata.append(`count`, split_count);
-                    formdata.append(`totalSize`, opt.file.size);
-                    formdata.append(`filename`, opt.file.name);
-                    // formdata.append(`updateID`, );
-
-                    debug(`\n615: Upload_do.formdata=`);
-                    debug(formdata);
+                    const split_count = Math.ceil(opt.file.size / opt_global.file_split_size);
 
                     // 检查已传部分
                     const ajax_check = () => {
@@ -634,11 +620,17 @@
                                 totalSize: opt.file.size
                             },
                             success: (res) => {
-                                res = JSON.parse(res);
+                                debug(`\n637 res=`);
+                                debug(res);
+                                // res = JSON.parse(res);
                                 if (isNaN(res.count))
-                                    res.count = 1;
-                                split_index = res.count;
-                                formdata.append(`index`, split_index);
+                                    res.count = 0;
+
+                                // 改变进度条
+                                opt.callback_progress({ lengthComputable: true }, opt_global.file_split_size * ~~res.count, opt.file.size, opt.index);
+
+                                split_index = ~~res.count + 1;
+                                debug(`\n641 split_index=${split_index}`);
                                 ajax_upload();
                             },
                             error: (err) => {
@@ -656,6 +648,24 @@
                     const ajax_upload = () => {
                         debug(`\n655 opt=`);
                         debug(opt);
+
+                        const split_start = opt_global.file_split_size * (split_index - 1),
+                            split_end = Math.min(opt.file.size, opt_global.file_split_size * split_index),
+                            split_file = split_count === 1 ? opt.file : opt.file.slice(split_start, split_end);
+
+                        let formdata = new FormData();
+                        formdata.append(`file`, split_file);
+                        formdata.append(`index`, split_index);
+                        formdata.append(`count`, split_count);
+                        formdata.append(`totalSize`, opt.file.size);
+                        formdata.append(`filename`, opt.file.name);
+
+                        // debug(`\n607: Upload_split. split_count=${split_count}, split_start=${split_start}, split_end=${split_end}`);
+                        // formdata.append(`updateID`, );
+
+                        debug(`\n658: ajax_upload.formdata=`);
+                        debug(formdata);
+
                         this.Xhr = $.ajax({
                             url: opt.upload_url,
                             type: "post",
@@ -678,7 +688,7 @@
                                 debug(this.dom_obj);
 
                                 if (split_index < split_count) {
-                                    Upload_split(split_index + 1);
+                                    Upload_split(~~split_index + 1);
                                 } else {
 
                                     const index = this.dom_obj ? this.dom_obj.file_ul.find(`li:eq(${opt.index})`).attr("ProgressView_liIndex") : opt.index_flag;
@@ -707,7 +717,6 @@
                     if (split_count > 1 && split_index === 1)
                         ajax_check();
                     else {
-                        formdata.append(`index`, split_index);
                         ajax_upload();
                     }
 

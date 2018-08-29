@@ -66,8 +66,8 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     wrapper_width_unit: "vw",
                     wrapper_height: 50,
                     wrapper_height_unit: "vh",
-                    upload_url: "/uploadfile",
-                    check_url: "/checkfile",
+                    upload_url: "/handle/upload.ashx",
+                    check_url: "/handle/check.ashx",
                     thread_maxCount: 2,
                     // callback_progressViewClose: () => {
                     //     progressView.dom_obj.file_ul.html("");

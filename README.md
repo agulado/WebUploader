@@ -16,9 +16,6 @@ WebUploader v1.1.2
 ![demo_2](https://github.com/agulado/WebUploader/blob/master/demo/demo_2.png)
 ![demo_3](https://github.com/agulado/WebUploader/blob/master/demo/demo_3.png)
 
-**待实现功能：**
-1. c#版demo
-
 npm
 ---
 ```sh

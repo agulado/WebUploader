@@ -109,7 +109,7 @@ router.post('/uploadfile', multer_uploadFile.single('file'), function(req, res) 
 router.post('/checkfile', function(req, res) {
     fs.readdir(`./UploadFile/temp/${req.body.filename}_${req.body.totalSize}`, (err, files) => {
         const len = err ? 0 : files.length;
-        res.send(JSON.stringify({ count: len }));
+        res.send({ count: len });
     });
 });
 

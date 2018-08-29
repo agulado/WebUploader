@@ -1,4 +1,4 @@
-WebUploader v1.1.1
+WebUploader v1.1.2
 ===
 
 ### 基于H5的文件上传layout
@@ -102,6 +102,10 @@ webUploader.UploadStart({
 			* index: 分片序号，count>1时有效。
 			* filename: 原始文件名
 			* totalSize: 文件原始大小
+
+	* 返回结果（json）：
+
+			{ "filePath": filePath }
 	
 	* 最佳体验：
 		
@@ -119,12 +123,17 @@ webUploader.UploadStart({
 			* filename: 原始文件名
 			* totalSize: 文件原始大小
 
-	* 返回结果：
+	* 返回结果（json）：
 
-			{ count : n }
+			{ "count" : n }
 
 更新日志
 ---
+v1.1.2（2018-08-28）
+
+	* 做了C#版demo
+	* 解决了一些bug
+
 v1.1.1（2018-08-28）
 
 	* 超过2M的文件做了分片上传和断点续传
@@ -139,7 +148,7 @@ v0.1.5（2018-08-01）
 
 v0.1.4（2018-07-18）
 
-	* 引入了babel，做了ie7以上的兼容测试
+	* 引入了babel，做了ie10以上的兼容测试
 	* 解决了一些bug
 
 v0.1.3（2018-07-17）

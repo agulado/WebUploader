@@ -1,5 +1,5 @@
 /*
-    web-upload 1.1.2
+    web-upload 1.2.1
     高京
     2018-07-06
 */
@@ -456,7 +456,9 @@
                             debug(`\n438: UploadStart.callback_progress.event_progress=`);
                             debug(event_progress);
                             if (event_progress.lengthComputable) {
-                                const percent = Math.floor(loadedSize * 100 / totalSize);
+                                let percent = Math.floor(loadedSize * 100 / totalSize);
+                                if (percent > 100)
+                                    percent = 100;
 
                                 if (this.opt_upload.callback_progress)
                                     this.opt_upload.callback_progress(index, percent);
@@ -692,14 +694,19 @@
                                 } else {
 
                                     const index = this.dom_obj ? this.dom_obj.file_ul.find(`li:eq(${opt.index})`).attr("ProgressView_liIndex") : opt.index_flag;
-                                    this.UploadSuccessFilepath[index] = res.filePath;
+                                    const fileinfo = {
+                                        fileName: opt.file.name,
+                                        fileSize: sizeFormat(opt.file.size),
+                                        filePath: res.filePath
+                                    };
+                                    this.UploadSuccessFilepath[index] = fileinfo;
 
                                     debug(`\n626: index=${index}; opt.index_flag=${opt.index_flag}; this.UploadSuccessFilepath=`);
                                     debug(this.UploadSuccessFilepath);
 
                                     // 为了让callback_success在callback_progress后执行。
                                     setTimeout(() => {
-                                        opt.callback_success && opt.callback_success(opt.index, res.filePath);
+                                        opt.callback_success && opt.callback_success(index, fileinfo);
                                     }, 50);
                                 }
                             },

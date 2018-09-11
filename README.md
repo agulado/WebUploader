@@ -1,4 +1,4 @@
-WebUploader v1.1.2
+WebUploader v1.2.1
 ===
 
 ### 基于H5的文件上传layout
@@ -126,6 +126,11 @@ webUploader.UploadStart({
 
 更新日志
 ---
+v1.2.1（2018-09-11）
+
+	* 修改了成功后的回调参数，增加了fileName和fileSize，具体见传参部分
+	* 解决了percent可能会超过100%的bug
+
 v1.1.2（2018-08-28）
 
 	* 做了C#版demo

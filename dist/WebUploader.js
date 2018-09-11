@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-    web-upload 1.1.2
+    web-upload 1.2.1
     高京
     2018-07-06
 */
@@ -404,6 +404,7 @@
                         debug(event_progress);
                         if (event_progress.lengthComputable) {
                             var percent = Math.floor(loadedSize * 100 / totalSize);
+                            if (percent > 100) percent = 100;
 
                             if (_this3.opt_upload.callback_progress) _this3.opt_upload.callback_progress(index, percent);else {
                                 var li = _this3.dom_obj.file_ul.find("li:eq(" + index + ")"),
@@ -622,14 +623,19 @@
                                 } else {
 
                                     var index = _this4.dom_obj ? _this4.dom_obj.file_ul.find("li:eq(" + opt.index + ")").attr("ProgressView_liIndex") : opt.index_flag;
-                                    _this4.UploadSuccessFilepath[index] = res.filePath;
+                                    var fileinfo = {
+                                        fileName: opt.file.name,
+                                        fileSize: sizeFormat(opt.file.size),
+                                        filePath: res.filePath
+                                    };
+                                    _this4.UploadSuccessFilepath[index] = fileinfo;
 
                                     debug("\n626: index=" + index + "; opt.index_flag=" + opt.index_flag + "; this.UploadSuccessFilepath=");
                                     debug(_this4.UploadSuccessFilepath);
 
                                     // 为了让callback_success在callback_progress后执行。
                                     setTimeout(function () {
-                                        opt.callback_success && opt.callback_success(opt.index, res.filePath);
+                                        opt.callback_success && opt.callback_success(index, fileinfo);
                                     }, 50);
                                 }
                             },

@@ -68,6 +68,8 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                     wrapper_height_unit: "vh",
                     upload_url: "/handle/upload.ashx",
                     check_url: "/handle/check.ashx",
+                    // upload_url: "/uploadfile",
+                    // check_url: "/checkfile",
                     thread_maxCount: 2,
                     // callback_progressViewClose: () => {
                     //     progressView.dom_obj.file_ul.html("");
@@ -152,8 +154,8 @@ define(["modules/debug", "lib/WebUploader"], function($debug, $WebUploader) {
                                 callback_progress: (index, percent) => {
                                     li[index].find("span").text(`${percent}%`);
                                 }, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-                                callback_success: (index, filePath) => {
-                                    li[index].find("span").html(`&radic; ${filePath}`);
+                                callback_success: (index, fileinfo) => {
+                                    li[index].find("span").html(`&radic; ${fileinfo.filePath}`);
                                 }, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
                                 callback_successAll: (_filePath) => {
                                     window.alert("success");

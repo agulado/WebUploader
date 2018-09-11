@@ -1,6 +1,6 @@
 {
   "name": "web-uploader-html5",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "description": "基于H5的文件上传layout",
   "main": "Readme.md",
   "scripts": {
@@ -11,7 +11,10 @@
     "url": "git+https://github.com/agulado/WebUploader.git"
   },
   "keywords": [
-    "topu.net"
+    "uploader",
+    "webUploader",
+    "webupload",
+    "upload"
   ],
   "author": "Topu.net",
   "license": "ISC",

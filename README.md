@@ -68,7 +68,7 @@ webUploader.getProgressView({
 	bg_color: "rgba(0,0,0,0.8)", // show_kind=1时有效，背景颜色。默认"rgba(0,0,0,0.8)"
 	autoStart: true, // show_kind=1时有效，选好文件自动开始上传。默认true
 	callback_progressViewClose: null, // 关闭进度条后执行回调
-	callback_successAll: null // 全部文件上传成功后回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+	callback_successAll: null // 全部文件上传成功后回调。function(fileinfo={0:{文件0信息},1:{文件1信息},n:文件n信息}){}。其中文件信息包括{fileName,fileSize,filePath}
 });
 ```
 #### 关闭/隐藏 进度条视图盒：
@@ -84,8 +84,8 @@ webUploader.UploadStart({
 	check_url: null, // 检查已上传文件进度的处理地址。
 	thread_maxCount: 5, // 最多同时执行上传线程。默认5
 	callback_progress: null, // 进度条更改回调。function(index=文件序号,percent=上传百分比)
-	callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,filePath=上传后文件路径)
-	callback_successAll: null // 全部文件上传成功回调。function(filePath={0:文件0路径,1:文件1路径,n:文件n路径}){}
+	callback_success: null, // 上传成功回调（每个文件上传成功都会回调一次）。function(index=文件序号,fileinfo={fileName,fileSize,filePath})
+	callback_successAll: null // 全部文件上传成功回调。function(fileinfo={0:{文件0信息},1:{文件1信息},n:文件n信息}){}。其中文件信息包括{fileName,fileSize,filePath}
 });     
 ```
 
